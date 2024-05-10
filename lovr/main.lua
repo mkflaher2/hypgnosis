@@ -9,10 +9,11 @@ local dataString = '{"direction":1,"speed":1.0,"color":{"r":1.0,"g":1.0,"b":1.0,
 local data = {}
 local headers = {}
 
---1 for cw, 2 for ccw
-local direction = 1
 --goes from 1 to 10
 local speed = 1
+
+-- variable for rotating spiral
+local theta = 0
 
 local color = {}
 color["r"] = 1
@@ -49,7 +50,7 @@ local function draw(pass)
     local dx, dy, dz = direction:unpack()
 
     local rotationMatrix = lovr.math.newMat4(basePos, scale, orientation)
-    local composedMatrix = rotationMatrix:rotate(lovr.headset.getTime() * speed, 0, 0, -1)
+    local composedMatrix = rotationMatrix:rotate(theta, 0, 0, -1)
     local angle, ax, ay, az = composedMatrix:getOrientation()
 
     -- draw the cone
@@ -79,19 +80,17 @@ local function checkForUpdates() -- a polling function, to be called in lovr.upd
         if status == 200 then
 
             data = json.decode(dataString)
-            direction = data['direction']
             speed = data['speed']
             color = data['color']
-
-           if direction == 2 then
-                speed = -speed
-            end
         end
     end
 end
 
 function lovr.update(dt)
+    -- query the web API
     checkForUpdates()
+    -- increment the spiral rotation angle
+    theta = theta + speed * dt
 end
 
 function lovr.draw(pass)

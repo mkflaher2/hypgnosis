@@ -9,7 +9,6 @@ class Color(BaseModel):
 
 
 class ControlModel(BaseModel):
-    direction: int = 1
     speed: float = 1
     color:Color = Color()
 

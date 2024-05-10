@@ -1,0 +1,5 @@
+nicegui
+fastapi
+pydantic
+requests
+strenum

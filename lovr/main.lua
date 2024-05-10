@@ -1,18 +1,37 @@
+--json
+local json = require('json')
+
+--http variables
+
+local http = require 'http'
+local status = 200
+local dataString = '{"direction":1,"speed":1.0,"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0}}'
+local data = {}
+local headers = {}
+
+--1 for cw, 2 for ccw
+local direction = 1
+--goes from 1 to 10
+local speed = 1
+
+local color = {}
+color["r"] = 1
+color["g"] = 1
+color["b"] = 1
+color["a"] = 1
+
+-- text handling
 local font = lovr.graphics.getDefaultFont()
 font:setPixelDensity(1)
 
-local width, height = lovr.system.getWindowDimensions()
-local projection = Mat4():orthographic(0, width, 0, height, -10, 10)
-
+-- texture
 local spiralTexture = lovr.graphics.newTexture('images/spiral.jpg')
 local spiralShader = lovr.graphics.newShader('unlit', 'unlit')
 
-local viewCount = lovr.headset.getViewCount()
+-- managing both eye views
 local currentView = 1
 
 local function draw(pass)
-
-    --local spiral = { x = width / 2, y = height / 2, w = width, h = height }
 
     local position = vec3(lovr.headset.getPosition('head'))
     local direction = vec3(lovr.headset.getDirection('head'))
@@ -30,7 +49,7 @@ local function draw(pass)
     local dx, dy, dz = direction:unpack()
 
     local rotationMatrix = lovr.math.newMat4(basePos, scale, orientation)
-    local composedMatrix = rotationMatrix:rotate(lovr.headset.getTime(), 0, 0, -1)
+    local composedMatrix = rotationMatrix:rotate(lovr.headset.getTime() * speed, 0, 0, -1)
     local angle, ax, ay, az = composedMatrix:getOrientation()
 
     -- draw the cone
@@ -38,17 +57,41 @@ local function draw(pass)
     pass:setMaterial(spiralTexture)
     -- Pass:cone(position, scale, orientation, segments)
     --
+    local r = color["r"]
+    local g = color["g"]
+    local b = color["b"]
+    local a = color["a"]
+   
+    pass:setColor(r, g, b, a)
     pass:cone(x, y, z, radius, length, angle, ax, ay, az)
-    
-    pass:setColor(1,0,0)
-    pass:text(
-        "angle: " .. string.format("%.2f", angle * 180 / math.pi) ..
-        "; ax: " .. string.format("%.2f", ax) .. 
-        "; ay: " .. string.format("%.2f", ay) ..  
-        "; az: " .. string.format("%.2f", az),
-        x, y, z + 1, 0.005, angle, ax, ay, az
-    )
+    pass:text(dataString, position + direction * 5 , 0.005, orientation)
 
+end
+
+local function checkForUpdates() -- a polling function, to be called in lovr.update
+
+    local tempStatus
+
+    tempStatus, dataString, headers = http.request('http://192.168.0.186:8081/state') --TODO: parametrize or expose URL
+    if tempStatus then
+        status = tempStatus
+
+        if status == 200 then
+
+            data = json.decode(dataString)
+            direction = data['direction']
+            speed = data['speed']
+            color = data['color']
+
+           if direction == 2 then
+                speed = -speed
+            end
+        end
+    end
+end
+
+function lovr.update(dt)
+    checkForUpdates()
 end
 
 function lovr.draw(pass)

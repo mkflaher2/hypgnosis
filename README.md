@@ -1,5 +1,7 @@
 # HypGNOSIS
 
+![HypGNOSIS in action](https://github.com/mkflaher2/hypgnosis/blob/main/docs/images/hypgnosis-demo.png?raw=true)
+
 HypGNOSIS is a remote-controllable VR hypnosis app built on the LÖVR development framework.
 
 ## Requirements
@@ -9,6 +11,7 @@ HypGNOSIS is a remote-controllable VR hypnosis app built on the LÖVR developmen
 - LÖVR
 
 ## Installation
+
 
 ### Webapp (Frontend and API)
 

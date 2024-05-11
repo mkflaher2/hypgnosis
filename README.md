@@ -4,24 +4,19 @@ HypGNOSIS is a remote-controllable VR hypnosis app built on the LÖVR developmen
 
 ## Requirements
 
-- python3.10
-- python3.10-venv
+- Docker
+- docker-compose
 - LÖVR
 
 ## Installation
 
-TODO: make webapp deployable via docker
-
 ### Webapp (Frontend and API)
 
 1. `git clone https://github.com/mkflaher2/hypgnosis.git && cd hypgnosis`
-2. `python -m venv . && source bin/activate`
-3. `pip install -r requirements.txt`
-4. For the API: `python api.py`
-5. `export HYPGNOSIS_API_URL=http://localhost:8081`
-5. For the frontend: `python ui.py`
+2. Edit `hypgnosis.env` and set the hostname / IP address to the host you run HypGNOSIS on.
+3. `docker-compose -f docker-compose.yaml up --build -d`
 
-The webapp can be reached at `http://localhost:8080`
+The webapp can be reached at `http://localhost:8080` on the host machine, or via your host IP from another.
 
 ### VR App
 

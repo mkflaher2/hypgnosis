@@ -8,9 +8,12 @@ class CallbackHandler:
 
     def update_state(self):
         print(self.control_model.model_dump())
-        response = requests.post(
-            f"{self.api_url}/state",
-            json=self.control_model.model_dump()
-        )
-        print(response.json())
+
+        try:
+            response = requests.post(
+                f"{self.api_url}/state",
+                json=self.control_model.model_dump()
+            )
+        except Exception as e:
+            print(f"Unable to connect to API server: {e}")
 

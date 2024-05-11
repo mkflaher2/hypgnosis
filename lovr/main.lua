@@ -1,13 +1,15 @@
---json
+-- json
 local json = require('json')
 
---http variables
+-- http variables
 
 local http = require 'http'
 local status = 200
 local dataString = '{"direction":1,"speed":1.0,"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0}}'
 local data = {}
 local headers = {}
+
+local pollCounter = 0
 
 --goes from 1 to 10
 local speed = 1
@@ -65,7 +67,6 @@ local function draw(pass)
    
     pass:setColor(r, g, b, a)
     pass:cone(x, y, z, radius, length, angle, ax, ay, az)
-    pass:text(dataString, position + direction * 5 , 0.005, orientation)
 
 end
 
@@ -73,7 +74,7 @@ local function checkForUpdates() -- a polling function, to be called in lovr.upd
 
     local tempStatus
 
-    tempStatus, dataString, headers = http.request('http://192.168.0.186:8081/state') --TODO: parametrize or expose URL
+    tempStatus, dataString, headers = http.request('http://35.245.74.110:8081/state') --TODO: parametrize or expose URL
     if tempStatus then
         status = tempStatus
 
@@ -88,7 +89,12 @@ end
 
 function lovr.update(dt)
     -- query the web API
-    checkForUpdates()
+    pollCounter = (pollCounter + 1) % 10
+
+    if pollCounter == 0 then
+        checkForUpdates()
+    end
+        
     -- increment the spiral rotation angle
     theta = theta + speed * dt
 end

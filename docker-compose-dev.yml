@@ -1,0 +1,26 @@
+version: "3"
+services:
+  hypgnosis-api:
+    container_name: hypgnosis-api
+    build:
+      context: .
+      dockerfile: hypgnosis_api/Dockerfile
+    networks:
+      - hypgnosis-net
+    ports:
+      - 8081:8081
+
+  hypgnosis-ui:
+    container_name: hypgnosis-ui
+    build:
+      context: .
+      dockerfile: hypgnosis_ui/Dockerfile
+    env_file:
+      - ./hypgnosis-dev.env
+    networks:
+      - hypgnosis-net
+    ports:
+      - 8080:8080
+
+networks:
+  hypgnosis-net:

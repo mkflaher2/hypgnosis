@@ -21,3 +21,8 @@ The webapp can be reached at `http://localhost:8080` on the host machine, or via
 ### VR App
 
 See https://lovr.org/docs/Getting_Started or https://lovr.org/docs/Getting_Started_(Quest) on how to load apps to your device.
+
+#### Oculus Quest 2
+1. Ensure that USB debugging is enabled on your Quest, and that it's connected to your computer.
+2. From the `hypgnosis` directory: `adb push --sync lovr/. /sdcard/Android/data/org.lovr.app/files`
+3. Using your headset, navigate to Library -> Applications -> Unknown sources, and launch LÖVR.

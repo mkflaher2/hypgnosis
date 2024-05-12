@@ -11,4 +11,3 @@ class Color(BaseModel):
 class ControlModel(BaseModel):
     speed: float = 1
     color:Color = Color()
-

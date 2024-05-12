@@ -1,5 +1,3 @@
-from app.models.control import Color
-
 from nicegui import ui
 from os import getenv
 
@@ -57,13 +55,31 @@ def spiral_control(control_model, callback_handler):
             ).bind_value(control_model.color, 'a') \
             .props('label-always')
 
-def init_page(control_model, callback_handler):
+def init_page(user_data, control_model, callback_handler):
 
-    @ui.page('/')
-    def show():
+    @ui.page("/")
+    def show_root():
+        with ui.column().classes('w-full items-center'):
+            ui.markdown('# HypGNOSIS')
+
+            with ui.row().classes('w-64 items-center'):
+                ui.label('Enter 6-digit user code from VR headset')
+                code_input = ui.input(
+                    label='Enter code',
+                    placeholder='000000',
+                    on_change = lambda e: user_data.set_user_id(e.value)
+                )
+
+                ui.button(
+                    'Enter code',
+                    on_click=lambda: ui.navigate.to(f"/control/{user_data.id}")
+                )
+
+    @ui.page("/control/{user_id}")
+    def show_control(user_id):
         ui.page_title('HypGNOSIS')
         with ui.column().classes('w-full items-center'):
-            ui.markdown("# HypGNOSIS")
+            ui.markdown('# HypGNOSIS')
             with ui.tabs().classes('w-full') as tabs:
                 spiral_tab = ui.tab('Spiral')
             with ui.tab_panels(tabs, value=spiral_tab).classes('w-full items-center'):

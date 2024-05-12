@@ -70,4 +70,4 @@ def init_page(control_model, callback_handler):
                 with ui.tab_panel(spiral_tab):
                     spiral_control(control_model, callback_handler)
 
-    ui.run(port=getenv('HYPGNOSIS_UI_PORT'))
+    ui.run(port=int(getenv('HYPGNOSIS_UI_PORT')))

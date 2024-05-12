@@ -11,8 +11,8 @@ def spiral_control(control_model, callback_handler):
         with ui.row().classes(slider_width):
             ui.label('Speed')
             speed_slider = ui.slider(
-                min=-10, max=10,
-                value=1,
+                min=-20, max=20,
+                value=5,
                 step=0.01,
                 on_change=callback_handler.update_state
             ).bind_value(control_model, 'speed') \

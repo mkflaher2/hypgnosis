@@ -10,7 +10,7 @@ def spiral_control(control_model, callback_handler):
             ui.label('Speed')
             speed_slider = ui.slider(
                 min=-20, max=20,
-                value=5,
+                value=2,
                 step=0.01,
                 on_change=callback_handler.update_state
             ).bind_value(control_model, 'speed') \
@@ -55,7 +55,7 @@ def spiral_control(control_model, callback_handler):
             ).bind_value(control_model.color, 'a') \
             .props('label-always')
 
-def init_page(user_data, control_model, callback_handler):
+def init_page(control_model, callback_handler):
 
     @ui.page("/")
     def show_root():
@@ -67,12 +67,12 @@ def init_page(user_data, control_model, callback_handler):
                 code_input = ui.input(
                     label='Enter code',
                     placeholder='000000',
-                    on_change = lambda e: user_data.set_user_id(e.value)
+                    on_change = lambda e: control_model.set_user_id(e.value)
                 )
 
                 ui.button(
                     'Enter code',
-                    on_click=lambda: ui.navigate.to(f"/control/{user_data.id}")
+                    on_click=lambda: ui.navigate.to(f"/control/{control_model.user_id}")
                 )
 
     @ui.page("/control/{user_id}")

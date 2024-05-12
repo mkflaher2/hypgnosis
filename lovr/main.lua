@@ -34,7 +34,7 @@ local nextB = 1
 local nextA = 1
 
 -- text handling
-local font = lovr.graphics.getDefaultFont()
+local font = lovr.graphics.newFont('fonts/DejaVuSansMono.ttf')
 font:setPixelDensity(1)
 
 -- texture
@@ -44,7 +44,29 @@ local spiralShader = lovr.graphics.newShader('unlit', 'unlit')
 -- managing both eye views
 local currentView = 1
 
-local function draw(pass)
+-- state machine
+local state = "waiting_room"
+
+-- user ID for communicating with API
+local userId = ""
+
+function waiting_room(pass)
+    -- head position, direction, and orientation
+    local position = vec3(lovr.headset.getPosition('head'))
+    local direction = vec3(lovr.headset.getDirection('head'))
+    local orientation = quat(lovr.headset.getOrientation('head'))
+
+    pass:setColor(1, 1, 1, 1)
+
+    local message = "Please navigate to \n hypgnosis.solarized-dark.net \n and enter the collowing code: \n "
+    local message = message .. userId
+
+    pass:setFont(font)
+    pass:text(message, position + direction * 1, 0.002, orientation)
+
+end
+
+function hypno_room(pass)
 
     -- head position, direction, and orientation
     local position = vec3(lovr.headset.getPosition('head'))
@@ -110,12 +132,12 @@ local function draw(pass)
 
 end
 
-local function checkForUpdates() -- a polling function, to be called in lovr.update
+function checkForUpdates() -- a polling function, to be called in lovr.update
 
     --prod
-    local tempStatus, dataString, headers = http.request('http://35.245.74.110:8081/state')
+    --local tempStatus, dataString, headers = http.request(string.format('http://35.245.74.110:8081/users/%s', userId))
     --dev
-    --local tempStatus, dataString, headers = http.request('http://192.168.0.186:8081/state')
+    local tempStatus, dataString, headers = http.request(string.format('http://192.168.0.186:8081/users/%s', userId))
 
     local colorData = {}
     if tempStatus then
@@ -124,6 +146,13 @@ local function checkForUpdates() -- a polling function, to be called in lovr.upd
         if status == 200 then
 
             data = json.decode(dataString)
+
+            if data["user_id"] == userId then
+                state = "hypno_room"
+            else
+                state = "waiting_room"
+            end
+
             nextSpeed = data['speed']
             colorData = data['color']
         end
@@ -133,6 +162,22 @@ local function checkForUpdates() -- a polling function, to be called in lovr.upd
         nextB = colorData['b']
         nextA = colorData['a']
     end
+end
+
+function getUserId()
+    local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+
+    userId = ""
+
+    for i=1,6 do
+        local rint = math.random(1, #chars)
+        local rchar = chars:sub(rint, rint)
+        userId = userId .. rchar
+    end
+end
+
+function lovr.load(pass)
+    getUserId()
 end
 
 function lovr.update(dt)
@@ -147,5 +192,5 @@ function lovr.update(dt)
 end
 
 function lovr.draw(pass)
-    draw(pass)
+    _G[state](pass)
 end

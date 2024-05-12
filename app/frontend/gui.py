@@ -1,6 +1,7 @@
 from app.models.control import Color
 
 from nicegui import ui
+from os import getenv
 
 def spiral_control(control_model, callback_handler):
 
@@ -69,4 +70,4 @@ def init_page(control_model, callback_handler):
                 with ui.tab_panel(spiral_tab):
                     spiral_control(control_model, callback_handler)
 
-    ui.run()
+    ui.run(port=getenv('PORT'))

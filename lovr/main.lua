@@ -74,7 +74,10 @@ local function checkForUpdates() -- a polling function, to be called in lovr.upd
 
     local tempStatus
 
-    tempStatus, dataString, headers = http.request('http://35.245.74.110:8081/state') --TODO: parametrize or expose URL
+    --prod
+    --tempStatus, dataString, headers = http.request('http://hypgnosis.solarized-dark.net:8081/state')
+    --dev
+    tempStatus, dataString, headers = http.request('http://192.168.0.1:8081/state') --TODO: parametrize or expose URL
     if tempStatus then
         status = tempStatus
 

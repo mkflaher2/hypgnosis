@@ -20,7 +20,7 @@ services:
     networks:
       - hypgnosis-net
     ports:
-      - ${HYPGNOSIS_UI_PORT}:${HYPGNOSIS_UI_PORT}
+      - 80:80
 
 networks:
   hypgnosis-net:

@@ -2,6 +2,8 @@ from app.frontend.gui import init_page
 from app.frontend.callbacks import CallbackHandler
 from app.models.control import ControlModel
 
+from os import getenv
+
 if __name__ in  {"__main__", "__mp_main__"}:
 
     # Dependencies

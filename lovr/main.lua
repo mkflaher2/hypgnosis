@@ -165,6 +165,7 @@ function checkForUpdates() -- a polling function, to be called in lovr.update
 end
 
 function getUserId()
+    math.randomseed(os.time())
     local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
     userId = ""

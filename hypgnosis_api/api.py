@@ -9,10 +9,6 @@ PORT: int = 8081
 
 masterlist = {}
 
-class ControlState:
-    def __init__(self):
-        self.state = ControlModel()
-
 @app.post("/users/{user_id}")
 async def update_user_state(user_id: str, control_model: ControlModel):
     masterlist[user_id] = control_model
@@ -48,5 +44,4 @@ async def clear_dead_sessions():
     return dead_sessions
 
 if __name__ == "__main__":
-    control_state = ControlState()
     uvicorn.run(app, host="0.0.0.0", port=PORT)
